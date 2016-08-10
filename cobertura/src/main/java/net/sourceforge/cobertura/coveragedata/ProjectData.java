@@ -76,6 +76,36 @@ public class ProjectData extends CoverageDataContainer {
 	public ClassData getClassData(String name) {
 		return (ClassData) this.classes.get(name);
 	}
+	
+	public void removeClass(String name) {
+		lock.lock();
+		try {
+			this.classes.remove(name);
+			ClassData cd = new ClassData(name);
+			PackageData packageData = (PackageData)this.children.get(cd.getPackageName());
+			packageData.removeChild(cd.getBaseName());
+			
+			/*if (this.classes.remove(classData.getName()) != null) {
+				String packageName = classData.getPackageName();
+				CoverageData coverageData = (PackageData) children.get(packageName);
+				if (coverageData != null) {
+					//packageData.removeClassData(classData);
+					children.remove(packageName, coverageData);
+				}
+			}*/
+		} finally {
+			lock.unlock();
+		}
+	}
+	
+	public void removePackage(String name) {
+		lock.lock();
+		try {
+			this.children.remove(name);
+		} finally {
+			lock.unlock();
+		}
+	}
 
 	/**
 	 * This is called by instrumented bytecode.
@@ -339,4 +369,5 @@ public class ProjectData extends CoverageDataContainer {
 		return projectData;
 	}
 
+	
 }

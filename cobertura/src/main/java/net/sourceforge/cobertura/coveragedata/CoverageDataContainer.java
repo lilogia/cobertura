@@ -325,4 +325,11 @@ public abstract class CoverageDataContainer
 	public void synchronizeState() {
 
 	}
+	
+	public boolean removeChild(String className) {
+		boolean removed = false;
+		if (children.remove(className) != null)
+			removed = true;
+		return removed;
+	}
 }

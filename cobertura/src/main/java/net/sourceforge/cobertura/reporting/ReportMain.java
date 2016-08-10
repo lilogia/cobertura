@@ -67,6 +67,14 @@ public class ReportMain {
 				builder.setEncoding(args[++i]);
 			} else if (args[i].equals("--calculateMethodComplexity")) {
 				builder.calculateMethodComplexity(true);
+			}else if (args[i].equals("--filterpackagefile")) {
+				String packagefile = args[++i];
+				validateDataFile(packagefile);
+				builder.setFilterPackageFile(packagefile);
+			}else if (args[i].equals("--filterclassfile")) {
+				String classfile = args[++i];
+				validateDataFile(classfile);
+				builder.setFilterClassFile(classfile);
 			} else {
 				builder.addSources(args[i], baseDir == null);
 			}

@@ -1,5 +1,16 @@
 package net.sourceforge.cobertura.dsl;
 
+import static net.sourceforge.cobertura.coveragedata.TouchCollector.applyTouchesOnProjectData;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import net.sourceforge.cobertura.check.CheckCoverageTask;
 import net.sourceforge.cobertura.coveragedata.CoverageDataFileHandler;
 import net.sourceforge.cobertura.coveragedata.ProjectData;
@@ -9,10 +20,6 @@ import net.sourceforge.cobertura.reporting.ComplexityCalculator;
 import net.sourceforge.cobertura.reporting.CompositeReport;
 import net.sourceforge.cobertura.reporting.NativeReport;
 import net.sourceforge.cobertura.reporting.Report;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static net.sourceforge.cobertura.coveragedata.TouchCollector.applyTouchesOnProjectData;
 
 /*
  * Cobertura - http://cobertura.sourceforge.net/
@@ -114,12 +121,15 @@ public class Cobertura {
 		//			calculateCoverage();
 		//		}
 
+		//calculateCoverage();
+		
 		ComplexityCalculator complexityCalculator = new ComplexityCalculator(
 				args.getSources());
 		complexityCalculator.setEncoding(args.getEncoding());
 		complexityCalculator.setCalculateMethodComplexity(args.isCalculateMethodComplexity());
 
-		report.addReport(new NativeReport(getProjectDataInstance(), args
+		
+		report.addReport(new NativeReport(filterProjectDataInstance(getProjectDataInstance()), args
 				.getDestinationDirectory(), args.getSources(),
 				complexityCalculator, args.getEncoding()));
 
@@ -150,4 +160,48 @@ public class Cobertura {
 
 		return projectData;
 	}
+	
+	private ArrayList<String> getFilter(File whichFile) {
+		ArrayList<String> list = new ArrayList<String>();
+		
+		try {
+			FileInputStream fis = new FileInputStream(whichFile);
+			BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+		 
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				list.add(line);
+			}
+			br.close();
+		}catch (IOException exc) {
+			System.err.println(exc.getMessage());			
+		}
+		return list;
+	}
+	
+	private ProjectData filterProjectDataInstance(ProjectData prjData) {
+		File packageFile = args.getFilterPackageFile();
+		
+		
+		if ( packageFile != null) {
+			ArrayList<String> listFilterPackages = getFilter(packageFile);
+			Iterator<String> iterator = listFilterPackages.iterator();
+			while (iterator.hasNext()) {
+				prjData.removePackage(iterator.next());
+			}
+		}
+
+		File classFile = args.getFilterClassFile();
+		if ( classFile != null) {
+			ArrayList<String> listFilterClasses = getFilter(classFile);
+			Iterator<String> iterator = listFilterClasses.iterator();
+			while (iterator.hasNext()) {
+				prjData.removeClass(iterator.next());
+			}
+		}
+		
+		return prjData;
+	}
+	
+	
 }

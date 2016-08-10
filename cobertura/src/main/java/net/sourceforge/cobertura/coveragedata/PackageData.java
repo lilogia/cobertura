@@ -58,7 +58,7 @@ public class PackageData extends CoverageDataContainer
 			lock.unlock();
 		}
 	}
-
+	
 	/**
 	 * This is required because we implement Comparable.
 	 */

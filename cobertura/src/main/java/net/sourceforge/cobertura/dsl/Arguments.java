@@ -35,6 +35,8 @@ public class Arguments {
 
 	private String baseDirectory;
 	private File dataFile;
+	private File filterPackageFile;
+	private File filterClassFile;
 	private File destinationDirectory;
 	private File commandsFile;
 	private FileFinder sources;
@@ -77,7 +79,33 @@ public class Arguments {
 			double totalLineThreshold, double totalBranchThreshold,
 			Set<CoberturaFile> filesToInstrument, Set<File> filesToMerge,
 			Set<String> ignoreMethodAnnotations,
+			Set<String> ignoreClassAnnotations, FileFinder sources, File packageFile, File classFile) {
+		
+		this(baseDirectory, dataFile, destinationDirectory, commandsFile, ignoreRegexes, ignoreBranchesRegexes, classPatternIncludeClassesRegexes,
+				classPatternExcludeClassesRegexes, calculateMethodComplexity, failOnError, ignoreTrivial, threadsafeRigorous, encoding,
+				minimumCoverageThresholds, classLineThreshold, classBranchThreshold, packageLineThreshold, packageBranchThreshold,
+				totalLineThreshold, totalBranchThreshold, filesToInstrument, filesToMerge, ignoreMethodAnnotations, 
+				ignoreClassAnnotations, sources);
+		this.filterPackageFile = packageFile;
+		this.filterClassFile = classFile;
+	}
+	
+	Arguments(String baseDirectory, File dataFile, File destinationDirectory,
+			File commandsFile, Collection ignoreRegexes,
+			Collection<Pattern> ignoreBranchesRegexes,
+			Collection<Pattern> classPatternIncludeClassesRegexes,
+			Collection<Pattern> classPatternExcludeClassesRegexes,
+			boolean calculateMethodComplexity,
+			boolean failOnError, boolean ignoreTrivial,
+			boolean threadsafeRigorous, String encoding,
+			Set<CoverageThreshold> minimumCoverageThresholds,
+			double classLineThreshold, double classBranchThreshold,
+			double packageLineThreshold, double packageBranchThreshold,
+			double totalLineThreshold, double totalBranchThreshold,
+			Set<CoberturaFile> filesToInstrument, Set<File> filesToMerge,
+			Set<String> ignoreMethodAnnotations,
 			Set<String> ignoreClassAnnotations, FileFinder sources) {
+	
 		this.baseDirectory = baseDirectory;
 		this.dataFile = dataFile;
 		this.destinationDirectory = destinationDirectory;
@@ -117,6 +145,14 @@ public class Arguments {
 
 	public File getDataFile() {
 		return dataFile;
+	}
+	
+	public File getFilterPackageFile() {
+		return filterPackageFile;
+	}
+	
+	public File getFilterClassFile() {
+		return filterClassFile;
 	}
 
 	public File getDestinationDirectory() {

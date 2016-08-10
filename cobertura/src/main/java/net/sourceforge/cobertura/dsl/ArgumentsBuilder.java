@@ -51,6 +51,8 @@ public class ArgumentsBuilder {
 	private File destinationDirectory;
 	private File commandsFile;
 	private List<CodeSource> sources;
+	private File filterPackageFile;
+	private File filterClassFile;
 
 	private Collection ignoreRegexes;
 	private Collection<Pattern> ignoreBranchesRegexes;
@@ -89,6 +91,14 @@ public class ArgumentsBuilder {
 		this.dataFile = new File(dataFile);
 		return this;
 	}
+	public ArgumentsBuilder setFilterPackageFile(String packageFile) {
+		this.filterPackageFile = new File(packageFile);
+		return this;
+	}
+	public ArgumentsBuilder setFilterClassFile(String classFile) {
+		this.filterClassFile = new File(classFile);
+		return this;
+	}	
 
 	public ArgumentsBuilder setDestinationDirectory(String destinationDir) {
 		this.destinationDirectory = new File(destinationDir);
@@ -265,7 +275,7 @@ public class ArgumentsBuilder {
 				classLineThreshold, classBranchThreshold, packageLineThreshold,
 				packageBranchThreshold, totalLineThreshold,
 				totalBranchThreshold, filesToInstrument, filesToMerge,
-				ignoreMethodAnnotations, ignoreClassAnnotations, sources);
+				ignoreMethodAnnotations, ignoreClassAnnotations, sources, filterPackageFile, filterClassFile);
 	}
 
 	private double inRange(double coverageRate) {
@@ -279,6 +289,8 @@ public class ArgumentsBuilder {
 
 	private void initVariables() {
 		dataFile = CoverageDataFileHandler.getDefaultDataFile();
+		filterPackageFile = null;
+		filterClassFile = null;
 //		baseDirectory = new File(".");
 		ignoreRegexes = new Vector();
 		ignoreBranchesRegexes = new Vector<Pattern>();

@@ -77,6 +77,8 @@ public class ReportTask extends CommonMatchingTask {
 	private File destDir;
 	private String srcDir;
 	private String encoding;
+	private String filterPackageFile = null;
+	private String filterClassFile = null;
 
 	public ReportTask() {
 		super(ReportMain.class.getCanonicalName());
@@ -96,6 +98,10 @@ public class ReportTask extends CommonMatchingTask {
 				builder.addArg("--encoding", encoding);
 			if (srcDir != null)
 				builder.addArg(srcDir);
+			if (filterPackageFile != null)
+				builder.addArg("--filterpackagefile", filterPackageFile);
+			if (filterClassFile != null)
+				builder.addArg("--filterclassfile", filterClassFile);
 			createArgumentsForFilesets(builder);
 
 			builder.saveArgs();
@@ -134,5 +140,13 @@ public class ReportTask extends CommonMatchingTask {
 
 	public void setSrcDir(String dir) {
 		srcDir = dir;
+	}
+	
+	public void setFilterPackageFile(String filterPackageFile) {
+		this.filterPackageFile = filterPackageFile;
+	}
+	
+	public void setFilterClassFile(String filterClassFile) {
+		this.filterClassFile = filterClassFile;
 	}
 }
